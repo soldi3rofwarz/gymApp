@@ -4,11 +4,12 @@ import { Box } from '@mui/material'
 import Details from '../Components/Details'
 import SimilarExercises from '../Components/SimilarExercises'
 import ExercisesVideos from '../Components/ExercisesVideos'
-import { exerciseOptions, fetchData } from '../api/fetchData'
+import { exerciseOptions, fetchData, youtubeOptions } from '../api/fetchData'
 
 const ExerciseDetails = () => {
 
   const [exerciseDetail, setExerciseDetail]= useState({})
+  const [exerciseVideos, setexerciseVideos] = useState([])
   const {id} = useParams()
   
 
@@ -19,6 +20,10 @@ const ExerciseDetails = () => {
 
       const exercisesDetailData= await fetchData(`${exerciseDbUrl}/exercises/exercise/${id}`, exerciseOptions)
       setExerciseDetail(exercisesDetailData)
+
+      const exerciseVideoData = await fetchData(`${youtubeSearchUrl}/search?query=${exercisesDetailData.name}`, youtubeOptions)
+      console.log('ff',exerciseVideoData)
+      setexerciseVideos(exerciseVideoData.contents)
     }
 
     fetchExercisesData()
@@ -27,7 +32,7 @@ const ExerciseDetails = () => {
   return (
     <Box>
       <Details exerciseDetail={exerciseDetail}/>
-      <ExercisesVideos/>
+      <ExercisesVideos exerciseVideos={exerciseVideos} name={exerciseDetail.name}/>
       <SimilarExercises/>
     </Box>
   )
